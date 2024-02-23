@@ -1,0 +1,41 @@
+%% ----- Step 1b -----
+%{
+  Initial release: 2021-05-04
+  Updated:        
+
+ Determince data centerpoint through multilateration, This can only work
+ for unwrapped phase data, or time data
+
+  Read measurement data.
+  'data_dir': Subdirectory with the measurement data files. Current
+              directory if not specified or empty string
+%}
+if UseOfffsetCorrection==1
+    [x, y, z, freqs, p_meas] = read_measurements(data_dir);
+
+    xRot=x';
+    yRot=y';
+    zRot=z';
+    measurementCoordinates=[xRot yRot zRot];
+
+        % Correct for measured acoutcis center offset BY MEANS OF
+        % MULTILATERATION BASED ON PHASE, ONLY WORK IS PAHSE IS UNWRAPPED
+        % OR WAVELENGT> MEAS DISTANCE. TODO: BASED ON UNWWRPAADE PHASE OF
+        % MEASUREMENTS OR O TDOA OF IMPULSE RESPONSES
+        for freqi=1:length(freqs)
+        freq=freqs(freqi);
+        phase=abs((angle(p_meas(:,freqi))));
+        time=(phase/(2*pi))*(1/freq);
+        distance=time*c;
+        [position,timeOffset] = algebraicGPSequations(measurementCoordinates, distance);
+        offsetposition(freqi,:)=[round(position(1,1),4) round(position(1,2),4) round(position(1,3),4)];
+        end
+
+    else
+    offsetposition(1,1)=0;
+    offsetposition(1,2)=0;
+    offsetposition(1,3)=0;
+
+end
+% Save frequencies of the simulated measurments to 'frequencies.cvs'
+csvwrite('offsetpositions.csv', offsetposition);

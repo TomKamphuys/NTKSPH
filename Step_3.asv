@@ -1,0 +1,76 @@
+%% ----- Step 3 -----
+%{
+  Initial release: 2021-04-18
+  Updated:         2021-04-22
+
+  Calculate the PSI matrices for the reconstruction grids. 3 different
+   reconstruction grids are used in this example -- the CTA2034 grid for
+   the spinorama curves and convergence calculations, and 2 planar grids
+   for visualizing the reconstruction process.
+%}
+
+%% 3a
+% Use CTA 2034 spinorama points as the reconstruction test grid.
+% If measurements are taken fully around the loudspeaker, the full
+%  spinorama grid is used.
+% If measurements are taken only in the front hemisphere (min x > -0.1),
+%  only the front half of the spinorama grid will be used.
+fprintf('Compute the reconstruction grid PSI matrices ...\n')
+if min(x) > -1e-1
+    [r_2034, theta_2034, phi_2034] = cta2034_halfgrid();
+else
+    [r_2034, theta_2034, phi_2034] = cta2034_grid();
+end
+p2034_len = length(r_2034);
+
+% Time how long it takes to compute the CTA2034 grid PSI matrix
+tic;
+PSI_2034 = sph_PSI_mix(r_2034, theta_2034, phi_2034, omega, Nmax, temp);
+fprintf('CTA2034 grid PSI Matrix: ')
+fprintf('Nmax = %d, compute time = %.3f, ', Nmax, toc)
+fprintf('size %d X %d\n', size(PSI_2034))
+
+%% ==================================================================== 3c
+% Create 2 planar grids (hollow discs in 'XZ' and 'XY' planes) for
+%  visualizing the error between input simulation grid and reconstructed
+%  grid
+%  PSI matrices, which are required for the reconsturctions, are also
+%  computed.
+% Since MATLAB surface plotting requires the grid coordinates to be
+%  arranged in 2D arrays, the point coordinates need to be flattened into
+%  vectors for generating the PSI matrices.
+
+% Create the first plotting grid P1 (on XY plane):
+[x_p1, y_p1, z_p1] = cart_disc_grid('xz');
+% Correct for measured acoutcis center offset
+x_p1=x_p1-offsetposition(1,1);
+y_p1=y_p1-offsetposition(1,2);
+z_p1=z_p1-offsetposition(1,3);
+
+p1_shape = size(x_p1);
+[phi_p1, theta_p1, r_p1] = cart2sph(x_p1, y_p1, z_p1);
+theta_p1 = pi/2 - theta_p1;
+tic;
+PSI_p1 = sph_PSI_mix(flatten(r_p1), flatten(theta_p1), flatten(phi_p1), ...
+                     omega, Nmax, temp);
+fprintf('P1 grid PSI matrix: ')
+fprintf('Nmax = %d, compute time = %.3f, ', Nmax, toc)
+fprintf('size %d X %d\n', size(PSI_p1))
+
+% Create the second plotting grid P2 (on XZ plane):
+[x_p2, y_p2, z_p2] = cart_disc_grid('xy');
+% Correct for measured acoutcis center offset
+x_p2=x_p2+offsetposition(1,1);
+y_p2=y_p2-offsetposition(1,2);
+z_p2=z_p2-offsetposition(1,3);
+
+p2_shape = size(x_p2);
+[phi_p2, theta_p2, r_p2] = cart2sph(x_p2, y_p2, z_p2);
+theta_p2 = pi/2 - theta_p2;
+tic;
+PSI_p2 = sph_PSI_mix(flatten(r_p2), flatten(theta_p2), flatten(phi_p2), ...
+                     omega, Nmax, temp);
+fprintf('P2 grid PSI matrix: ')
+fprintf('Nmax = %d, compute time = %.3f, ', Nmax, toc)
+fprintf('size %d X %d\n', size(PSI_p2))
+%% =================================================================================
