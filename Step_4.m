@@ -35,7 +35,7 @@ residuals(1) = res;
 %  results are reshaped back to the same matrix dimensions as the
 %  plotting grid coordinates for surface plotting.
 p1 = PSI_p1(:, 1:2*(n+1)^2) * CD_vec;
-p1 = reshape(p1, p1_shape);
+p_d1 = reshape(p1, p1_shape); % [MPOT] was also pl
 p1plot =20*log10(abs(p_d1)); %plot in dB values
 
 p2 = PSI_p2(:, 1:2*(n+1)^2) * CD_vec;
@@ -120,7 +120,7 @@ for n = 1:Nmax
     fprintf('N = %d, ', n)
     fprintf('f = %.0f Hz, compute time = %.3f; \n', freqs(f_bin), toc)
     residuals(n+1) = res;
-    
+
     p1 = PSI_p1(:, 1:2*(n+1)^2) * CD_vec;
     p1 = reshape(p1, p1_shape);
     p1plot =20*log10(abs(p1)); %plot in dB values
@@ -128,16 +128,16 @@ for n = 1:Nmax
     p2 = PSI_p2(:, 1:2*(n+1)^2) * CD_vec;
     p2 = reshape(p2, p2_shape);
     p2plot =20*log10(abs(p2)); %plot in dB values
-    
+
     % Reconstruct at CTA2034 grid and compute convergence metrics
     p2034(:, n+1) = PSI_2034(:, 1:2*(n+1)^2) * CD_vec;
     conv(n) = norm(p2034(:, n) - p2034(:, n+1)) / p2034_len;
-    
+
     % Update surface plots
     ax1.Title.String = sprintf('N = %d;  f = %.0f Hz\n', n, freqs(f_bin));
     surf1.CData = p1plot;
     surf2.CData = p2plot;
-    
+
     % Plot least squares residuals and convergence metrics
     cla(ax2);
     semilogy(ax2, 1:n+1, residuals(1:n+1), 'bs-');
@@ -164,9 +164,9 @@ ax1 = subplot(1, 1, 1);
 
 for m = 1:length(freqs)
     omega = 2 * pi * freqs(m);
-    
- 
-    
+
+
+
     % Display the point sources as black 5 point stars
     for n = 1:length(pt_srcs)
         scatter3(ax1, pt_srcs{n}(2), pt_srcs{n}(3), ...
@@ -176,11 +176,11 @@ for m = 1:length(freqs)
             hold on;
         end
     end
-    
+
     % Plot the XZ disc grid
 %     p_d1 = sim_meas_cart(x_d1, y_d1, z_d1, omega, pt_srcs);
 %     p_d1plot =20*log10(abs(p_d1)); %plot in dB values
-    
+
     surf(ax1, x_d1, y_d1, z_d1, (p_d1plot-p1plot), ...
          'FaceColor', 'interp', 'EdgeColor', 'none');
   if m == 1
@@ -195,21 +195,21 @@ for m = 1:length(freqs)
      caxis([-6 6]);
     colorbar(ax1, 'eastoutside');
     view(ax1, [130 20]);
-    
+
     % Plot the XY disc grid
 %     p_d2 = sim_meas_cart(x_d2, y_d2, z_d2, omega, pt_srcs);
 %     p_d2plot =20*log10(abs(p_d2)); %plot in dB values
 
     surf(ax1, x_d2, y_d2, z_d2, p_d2plot-p2plot, ...
          'FaceColor', 'interp', 'EdgeColor', 'none');
-    
+
     % Plot the measurement points
     p_meas(:, m) = sim_meas_cart(x_meas, y_meas, z_meas, omega, pt_srcs);
 %     scatter3(ax1, x_meas, y_meas, z_meas, ...
 %              abs(p_meas(:, m)), abs(p_meas(:, m)));
 
     scatter3(ax1, x_meas, y_meas, z_meas,10,'white','filled');
-          
+
     title_str = sprintf('f = %.0f Hz', freqs(m));
     title(ax1, title_str);
     drawnow;

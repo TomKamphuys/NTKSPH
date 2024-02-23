@@ -1,7 +1,7 @@
 %% ----- Step 1b -----
 %{
   Initial release: 2021-05-04
-  Updated:        
+  Updated:
 
  Determince data centerpoint through multilateration, This can only work
  for unwrapped phase data, or time data
@@ -28,7 +28,7 @@ if UseOfffsetCorrection==1
         time=(phase/(2*pi))*(1/freq);
         distance=time*c;
         [position,timeOffset] = algebraicGPSequations(measurementCoordinates, distance);
-        offsetposition(freqi,:)=[round(position(1,1),4) round(position(1,2),4) round(position(1,3),4)];
+        offsetposition(freqi,:)=[myround(position(1,1),4) myround(position(1,2),4) myround(position(1,3),4)];
         end
 
     else

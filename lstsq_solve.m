@@ -7,7 +7,7 @@ function [x, mse] = lstsq_solve(A, b)
 %
 % Turn off the ill-conditioned matrix warning
 % dA = decomposition(A, 'CheckCondition', false);
-% 
+%
 % x = dA \ b;
 
 x = A \ b;

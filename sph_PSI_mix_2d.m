@@ -1,4 +1,4 @@
-function [PSI_mat, Nout] = sph_PSI_mix(r, theta, phi, omega, N, temp)
+function [PSI_mat, Nout] = sph_PSI_mix_2d(r, theta, phi, omega, N, temp)
 % SPH_PSI_MIX
 %  Compute the mixed field spherical wave expansion function matrix PSI.
 %  The function 'AKsh' from AKtools is used to calculate the spherical
@@ -48,18 +48,15 @@ end
 c = sqrt(1.4 * R_air * temp);
 kr = r * omega / c;
 n_rows = size(theta, 2);
-n_cols = (N + 1)^2;
+n_cols = 2*(N+1); %(N + 1)^2;
 PSI_mat = zeros(n_rows, n_cols);
 
 for n = 0:N
     hn1 = spherical_hn1(n, kr);
     jn = spherical_jn(n, kr);
-    for m = -n:n
-        j = (n^2 + n + m) + 1;
-        sph_harm = AKsh(n, m, rad2deg(phi), rad2deg(theta));
-        PSI_mat(:, j) = sph_harm .* hn1;
-%        PSI_mat(:, j+1) = sph_harm .* jn;
-    end
+    sph_harm = AKsh(n, 0, rad2deg(phi), rad2deg(theta));
+    PSI_mat(:, 2*n+1) = sph_harm .* hn1;
+%    PSI_mat(:, 2*n+2) = sph_harm .* jn;
 end
 
 if nargout > 1
