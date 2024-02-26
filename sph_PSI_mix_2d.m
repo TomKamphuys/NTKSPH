@@ -1,4 +1,4 @@
-function [PSI_mat, Nout] = sph_PSI_mix_2d(r, theta, phi, omega, N, temp)
+function [PSI_mat, Nout] = sph_PSI_mix_2d(r, angle, omega, N, temp)
 % SPH_PSI_MIX
 %  Compute the mixed field spherical wave expansion function matrix PSI.
 %  The function 'AKsh' from AKtools is used to calculate the spherical
@@ -26,7 +26,7 @@ elseif nargin > 6
 end
 
 if N < 0
-    N = floor(sqrt(length(theta)/2) - 1);
+    N = floor(sqrt(length(angle)/2) - 1);
 % elseif N > floor(sqrt(length(theta)/2) - 1)
 %     fprintf('N = %d will result in underdetermined system.\n', N)
 %     fprintf('Length(theta) = %d\n', length(theta))
@@ -47,16 +47,19 @@ end
 
 c = sqrt(1.4 * R_air * temp);
 kr = r * omega / c;
-n_rows = size(theta, 2);
-n_cols = 2*(N+1); %(N + 1)^2;
+n_rows = length(angle);
+n_cols = (N+1);
 PSI_mat = zeros(n_rows, n_cols);
 
 for n = 0:N
-    hn1 = spherical_hn1(n, kr);
-    jn = spherical_jn(n, kr);
-    sph_harm = AKsh(n, 0, rad2deg(phi), rad2deg(theta));
-    PSI_mat(:, 2*n+1) = sph_harm .* hn1;
-%    PSI_mat(:, 2*n+2) = sph_harm .* jn;
+    hn1 = spherical_hn1(n, kr)';
+    jn = spherical_jn(n, kr)';
+    temp = myLegendre(n, cos(angle));
+    PSI_mat(:, n+1) = temp .* hn1;
+%
+%    PSI_mat(:, 2*n+1) = temp .* hn1;
+%    PSI_mat(:, 2*n+2) = temp .* jn;
+
 end
 
 if nargout > 1
