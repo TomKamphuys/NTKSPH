@@ -85,7 +85,7 @@ z_meas = z_meas';
 
 % Assume we already know the optimal expansion order is 14.
 %
-Nmax = 14;
+Nmax = 4;
 
 % Convert the measurement points coordinates from Cartesian to polar
 [phi_meas, theta_meas, r_meas] = cart2sph (x_meas, y_meas, z_meas);

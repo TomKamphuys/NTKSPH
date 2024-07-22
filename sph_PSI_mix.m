@@ -14,36 +14,9 @@ function [PSI_mat, Nout] = sph_PSI_mix(r, theta, phi, omega, N, temp)
 %           complex numbers. The size of the matrix is: M rows by
 %           2*(N+1)**2 columns, where M = # of coordinates.
 %
-if nargin < 4
-    error('Too few input parameters.');
-elseif nargin == 4
-    N = -1;
-    temp = 293.15;
-elseif nargin == 5
-    temp = 293.15;
-elseif nargin > 6
-    error('Too many input parameters.');
-end
 
-if N < 0
-    N = floor(sqrt(length(theta)/2) - 1);
-% elseif N > floor(sqrt(length(theta)/2) - 1)
-%     fprintf('N = %d will result in underdetermined system.\n', N)
-%     fprintf('Length(theta) = %d\n', length(theta))
-%     N = floor(sqrt(length(theta)/2) - 1);
-%     fprintf('Reduced N to %d\n', N)
-end
 
-if exist('params.mat', 'file')
-    var_info = who('-file', 'params.mat');
-    if ismember('R_air', var_info)
-        load('params.mat', 'R_air');
-    else
-        R_air = 287.058;    % Specific gas constant for air
-    end
-else
-    R_air = 287.058;
-end
+R_air = 287.058;
 
 c = sqrt(1.4 * R_air * temp);
 kr = r * omega / c;
@@ -55,15 +28,13 @@ for n = 0:N
     hn1 = spherical_hn1(n, kr);
     jn = spherical_jn(n, kr);
     for m = -n:n
-        j = (n^2 + n + m) + 1;
-        sph_harm = AKsh(n, m, rad2deg(phi), rad2deg(theta));
+        j = 2*(n^2 + n + m) + 1;
+        sph_harm = spherical_harmonic(n, m, phi, theta);
         PSI_mat(:, j) = sph_harm .* hn1;
-%        PSI_mat(:, j+1) = sph_harm .* jn;
+        PSI_mat(:, j+1) = sph_harm .* jn;
     end
 end
 
-if nargout > 1
-    Nout = N;
-end
+Nout = N;
 
 end

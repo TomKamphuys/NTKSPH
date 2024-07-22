@@ -1,19 +1,21 @@
 function [f, p, angles] = read_speaker_measurement()
 
   angles = (0:10:180)'; % should depend on data in directory
-  decimation_amount = 100;
+  decimation_amount = 1;
 
   for ind = 1:length(angles)
 
 %    waitbar(ind/length(angles));
 
-    fileContent = importdata(sprintf('./Data/hor %d.txt', angles(ind)), ' ', 14);
-    data = fileContent.data;
+%    fileContent = importdata(sprintf('../Audio/Measurements/hor%d.FRD', angles(ind)), ' ', 14);
+%    data = fileContent.data;
+    file = sprintf('../Audio/Measurements/hor%d.FRD', angles(ind));
+    [f,mag,phase,comments] = mataa_import_FRD(file);
 
     % * Freq(Hz) SPL(dB) Phase(degrees)
 
-    f = data(:,1);
-    pt = to_pressure(data(:,2)) .* exp(i.*deg2rad(data(:,3)));
+%    f = data(:,1);
+    pt = to_pressure(mag) .* exp(i.*deg2rad(phase));
     f = f(1:decimation_amount:end);
     pt = pt(1:decimation_amount:end);
 

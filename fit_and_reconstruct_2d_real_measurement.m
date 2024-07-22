@@ -13,31 +13,28 @@ temp = 273.15 + 20;
 % PSI_mat      size(m, c)
 % coefs        size(c, 1) 1 is 'one
 
-%[f, p, angles] = read_speaker_measurement();
+[f, p, angles] = read_speaker_measurement();
 r = ones(size(angles));
-Nmax = 20;
+Nmax = 15;
 
 amount = 360;
 
 
-% To make things simpler, simulate 1 frequency only
-freqs = f;
+freqs = f(1:1:end);
 
 r_recon = 1.*ones(1,amount)';
 a_recon = linspace(-pi, pi, amount)';
+[x_recon, y_recon] = pol2cart(a_recon, r_recon);
 
 for ind = 1:length(freqs)
   omega = 2*pi*freqs(ind);
   p_meas = p(:,ind);
 
-  [PSI_mat, Nmax] = sph_PSI_mix_2d(r, angles, omega, Nmax, temp);
-%  disp(cond(PSI_mat));
+  PSI_mat = sph_PSI_mix_2d(r, angles, omega, Nmax, temp);
 
-  [CD_vec, res] = lstsq_solve(PSI_mat, p_meas);
+  CD_vec = lstsq_solve(PSI_mat, p_meas);
 
   bla(ind,:) = abs(CD_vec);
-
-  [x_recon, y_recon] = pol2cart(a_recon, r_recon);
 
   PSI_recon = sph_PSI_mix_2d(r_recon, a_recon, omega, Nmax, temp);
 
@@ -54,10 +51,11 @@ xlabel('frequency [Hz]')
 ylabel('Angle [deg]')
 colorbar
 title('Measurement')
+%ylim([-45, 45])
 
 
 subplot(2, 2, 2)
-pcolor(f, rad2deg(a_recon), dB_SPL(p_recon'))
+pcolor(freqs, rad2deg(a_recon), dB_SPL(p_recon'))
 shading flat
 colormap(jet)
 %set(gca,'xscale','log');
@@ -65,11 +63,26 @@ xlabel('frequency [Hz]')
 ylabel('Angle [deg]')
 colorbar
 title('Reconstructed')
+%ylim([-45, 45])
 
 subplot(2, 2, 3)
-pcolor(f, 1:(Nmax+1), (bla./repmat(max(bla, [], 2), 1, Nmax+1))');
+pcolor(freqs, 1:(Nmax+1), (bla./repmat(max(bla, [], 2), 1, Nmax+1))');
 shading flat
 xlabel('frequency [Hz]')
 ylabel('order [-]')
 colorbar
 title('Normalized Coefficients')
+
+%subplot(2, 2, 4)
+%pcolor(freqs, rad2deg(a_recon), dB_SPL(p) - dB_SPL(p_recon'))
+%shading flat
+%colormap(jet)
+%%set(gca,'xscale','log');
+%xlabel('frequency [Hz]')
+%ylabel('Angle [deg]')
+%colorbar
+%title('Difference')
+%ylim([-45, 45])
+
+
+

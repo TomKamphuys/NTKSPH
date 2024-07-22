@@ -10,12 +10,15 @@ function [X, Y, out_ref, out_recon] = plane_reconstruct(x_size, y_size, amount, 
   z_recon = zeros(size(y_recon));
 
   % Convert the reconstruction points coordinates from Cartesian to polar
-[phi_recon, theta_recon, r_recon] = cart2sph (x_recon, y_recon, z_recon);
+[phi_recon, theta_recon, r_recon] = cart2sph(x_recon, y_recon, z_recon);
 theta_recon = pi/2 - theta_recon;
+
 
 PSI_recon = sph_PSI_mix(r_recon, theta_recon, phi_recon, omega, Nmax, temp);
 
-p_recon = PSI_recon * CD_vec;
+%p_recon = PSI_recon * CD_vec;
+p_recon = PSI_recon(:, 1:2:end) * CD_vec(1:2:end, :);  % SFS reconstruction!
+
 
 out_recon = dB_SPL(reshape(p_recon, size(X)));
 

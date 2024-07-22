@@ -1,7 +1,7 @@
 % [Ynm, N, M] = AKsh(n, m, az, el, mode)
 % calculates complex spherical harmonics (SH) basis functions according
 % to [1], equations (1.9, 1.30, 1.34). Real valued SH functions are
-% caluclated according to [2].
+% calculated according to [2].
 %
 % Example usage:
 % [Ynm, N, M] = AKsh(3, [], [0 90 180 270], [90 90 90 90]);
@@ -22,7 +22,7 @@
 %        (0=North Pole, 90=front, 180= South Pole)
 %        (0 points to positive z-axis, 180 to negative z-axis)
 % mode - 'complex' or 'real' for calculating complex (default) and real
-%        valued SH. In the latter case the imaginary part of the complex 
+%        valued SH. In the latter case the imaginary part of the complex
 %        valued SH is taken for m<0 and the real part for m>0.
 %
 % OUTPUT
@@ -38,7 +38,7 @@
 %     (Eds.), Springer, Heidelberg et al. (2015).
 % [2] Earl G. Williams: Fourier Acoustics. Sound radiation and nearfield
 %     acoustical holography.  Academic Press, San Diego et al., (1999).
-% [3] Franz Zotter: Analysis and synthesis of sound-radiation with 
+% [3] Franz Zotter: Analysis and synthesis of sound-radiation with
 %     spherical arrays. Ph.D. dissertation, University of Music and
 %     Performing arts (2009).
 %
@@ -52,10 +52,10 @@
 % Licensed under the EUPL, Version 1.1 or as soon they will be approved by
 % the European Commission - subsequent versions of the EUPL (the "License")
 % You may not use this work except in compliance with the License.
-% You may obtain a copy of the License at: 
+% You may obtain a copy of the License at:
 % http://joinup.ec.europa.eu/software/page/eupl
-% Unless required by applicable law or agreed to in writing, software 
-% distributed under the License is distributed on an "AS IS" basis, 
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" basis,
 % WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing  permissions and
 % limitations under the License.
@@ -86,14 +86,14 @@ el  = el/180*pi;
 
 % --- get combinations of n and m to compute ---
 if isempty(m) || ~isnumeric(m)  % --> we compute all m for nn = 0;n
-    
-    % number of spherical harmonics, N,M,az matrices    
+
+    % number of spherical harmonics, N,M,az matrices
     [N, M, Nsh] = AKgetNM(n);
-    
+
     N  = repmat(N', [numel(az) 1]);
     M  = repmat(M', [numel(az) 1]);
     az = repmat(az, [1 Nsh]);
-    
+
 else   % --> we compute one n,m-combination
     % input check
     if numel(m)~=1
@@ -103,7 +103,7 @@ else   % --> we compute one n,m-combination
     elseif abs(m)>n
         error('AKsh:Input', '|m| must not be larger than n')
     end
-    
+
     % N,M-matrices
     Nsh = 1;
     N   = repmat(n, [Naz Nsh]);
@@ -141,7 +141,7 @@ if Nsh > 1
     % get combinations
     for nn = 1:n
         pos_start = (nn)^2+1;   % number of previously calculated n,m-combinations
-        
+
         % calculate legendre functions for positive m
         l(:,pos_start+nn:pos_start+2*nn) = legendre(nn, cos(el))';
         if strcmpi(mode, 'complex')
