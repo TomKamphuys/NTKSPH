@@ -1,11 +1,11 @@
-function [CD, fit_error] = convert_to_coefficients()
+function error_percentage = test_center_fit(corr, ind)
 
-  load 26082024_measurement.mat;
+  x_corr = corr(1);
+  z_corr = corr(2);
+  r_corr = corr(3);
 
-  N = 5;
-  temp = 273.15 + 20;
+  load('22082024_measurement.mat');
 
-  z = z;
   r = r + 0.03;
 
   beam_offset = 0.025; % meter
@@ -13,21 +13,28 @@ function [CD, fit_error] = convert_to_coefficients()
   arm_angle = 1.46; % degrees
   theta = correct_for_setup(theta, r, beam_offset, arm_offset, arm_angle); % setup is not perfect
 
+  N = 12;
+  temp = 273.15 + 20;
+
+  z = z;
+  r = r - r_corr;
+
   [x, y, z] = cyl2cart(r, theta, z);
 
-  x_meas = x; % - 0.043; % - 0.13; % acoustic center correction
+  x_meas = x - x_corr; % acoustic center correction
   y_meas = y;
-  z_meas = z; % - 0.09; % acoustic center correction
+  z_meas = z - z_corr; % acoustic center correction
 
   [phi, theta, r] = cart2sph_phys(x_meas', y_meas', z_meas');
 
   sph_harm = calc_angular_part(phi, theta, N);
 
-  for ind = 1:length(f)
-    waitbar(ind/length(f));
+%  ind = 1000;
+%  f = f(ind);
 
-    kr = calc_kr(r, f(ind), temp);
+  kr = calc_kr(r, f(ind), temp);
 
+%  for ind = 1:length(f)
     p_meas = p(:, ind);
 
     outgoing = calc_radial_part(kr, N) .* sph_harm;
@@ -37,12 +44,12 @@ function [CD, fit_error] = convert_to_coefficients()
 
     CD_vec = total \ p_meas;
 
-    fit_error(ind) = calc_error(p_meas, total, CD_vec);
+%    CD(:, ind) = get_outgoing_coefficients(CD_vec);
+%  endfor
 
-    CD(:, ind) = get_outgoing_coefficients(CD_vec);
-  endfor
+  omega = 2*pi*f(ind);
+
+  [error_dB, error_percentage] = calc_error(p_meas, total, CD_vec);
 
 endfunction
-
-
 

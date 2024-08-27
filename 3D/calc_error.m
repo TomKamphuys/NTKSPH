@@ -1,6 +1,4 @@
-function [error_dB, error_percentage] = calc_error(r, theta, phi, p_meas, CD_vec, omega, Nmax, temp)
-
-  PSI = sph_PSI_mix(r, theta, phi, omega, Nmax, temp);
+function [error_dB, error_percentage] = calc_error(p_meas, PSI, CD_vec)
 
   p_mod = PSI * CD_vec;
 

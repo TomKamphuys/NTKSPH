@@ -13,7 +13,7 @@ function [out_recon, angle, freqs] = vertical_directivity(CD, freqs)
 
   [phi, theta, r] = cart2sph_phys(x_recon', y_recon', z_recon');
 
-  kr = calc_kr(r, freqs, temp);
+  kr = calc_kr(distance, freqs, temp);
 
   angular_part = calc_angular_part(phi, theta, N);
   for ind = 1:length(kr)

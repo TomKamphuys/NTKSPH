@@ -5,7 +5,7 @@ function out = calc_radial_part_in(kr, N)
     jn = spherical_jn(n, kr);
     for m = -n:n
       j = n^2 + n + m + 1;
-      sph_hn1(:, j) = jn;
+      out(:, j) = jn;
     endfor
   endfor
 
