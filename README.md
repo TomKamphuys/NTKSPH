@@ -61,6 +61,9 @@ xlabel('Frequency [Hz]')
 ylabel('Fit error [dB]')
 ```
 
+![fit error](fit_error.png)
+
+
 ### Save data for quick reuse later
 
 ```
@@ -96,6 +99,9 @@ colorbar
 max(out(:))
 caxis([-70 -30]) % adjust for actual limits
 ```
+
+![Horizontal Directivity](directivity.png)
+
 
 ### 2034CEA (Spinorama) Plot
 
