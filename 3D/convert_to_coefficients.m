@@ -1,12 +1,12 @@
-function [CD, fit_error] = convert_to_coefficients()
+function [CD, fit_error, CD_tot] = convert_to_coefficients()
 
-  load 26082024_measurement.mat;
+  load 21062024_measurement.mat;
 
   N = 5;
   temp = 273.15 + 20;
 
   z = z;
-  r = r + 0.03;
+  r = r;
 
   beam_offset = 0.025; % meter
   arm_offset = 0.0023; % meter
@@ -40,6 +40,7 @@ function [CD, fit_error] = convert_to_coefficients()
     fit_error(ind) = calc_error(p_meas, total, CD_vec);
 
     CD(:, ind) = get_outgoing_coefficients(CD_vec);
+    CD_tot(:,ind) = CD_vec;
   endfor
 
 endfunction

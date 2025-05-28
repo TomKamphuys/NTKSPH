@@ -25,9 +25,6 @@ function [p, r, theta, z, f] = read_nfs_measurements(subdir)
 
   endfor
 
-  figure
-  plot(bla)
-
 % This code could be used in case only half a sphere is measured and you wan to mirror the measurements
 %  p = [flipud(p); p(2:end,:)];
 %  angles = deg2rad([flipud(-angles); angles(2:end)]);
