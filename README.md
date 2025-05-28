@@ -67,10 +67,10 @@ ylabel('Fit error [dB]')
 ### Save data for quick reuse later
 
 ```
-save -binary 22082024_CD8_acoustic_center.mat CD
+save -binary 21062024_CD.mat CD
 ```
 
-22082024_CD8_acoustic_center.mat is the filename
+21062024_CD.mat is the filename
 CD is the variable to save (the outgoing sound coefficients in this example)
 
 ### Make 2D directivity plot
