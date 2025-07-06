@@ -14,8 +14,8 @@ function [p, r, theta, z, f] = read_nfs_measurements(subdir)
 
     [hh, fs] = audioread([directory file '.wav']);
     t = (1:length(hh))/fs;
-    bla(ind) = sum(abs(hh(1:40)));
     [mag, phase, f, unit_mag] = mataa_IR_to_FR(hh,fs,[],unit);
+%    [mag, phase, f, unit_mag] = mataa_IR_to_FR_LFextend(hh,fs,0.001, 0.0035, 0.1, 50, [],unit);
 
     pt = to_pressure(mag) .* exp(i.*deg2rad(phase));
 

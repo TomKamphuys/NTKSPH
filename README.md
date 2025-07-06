@@ -14,14 +14,14 @@ NTKSPH uses a few other projects to aid in the steps to process the data.
 
 - [ita toolbox](http://www.ita-toolbox.org) (don't know if it is actually used). Read its README.md for how to find more info
 - [MATAA (Mat's Audio Analyzer)](https://github.com/mbrennwa/mataa)
-- some of maiky76's code he published somewhere diyadio or audiosciencerevies (don't know if it is actively used at the moment)
+- [maiky76's code he published on audiosciencerevies](https://www.audiosciencereview.com/...ct-spinorama-cea2034-from-the-nfs-data.14141/) for CEA2034 plots
 - ...
 
 
 ## Setup
 
-Add NTKSPH and it subdirectories to the path.
-Add mataa and its subdirectories to the path.
+- Add NTKSPH and it subdirectories to the path.
+- Add mataa and its subdirectories to the path.
 
 
 ## Commands
@@ -43,7 +43,7 @@ in the Measurements subdirectory of NTKSPH.
 This step does all the heavy work on might take some time. A waitbar will be shown so you have something to look at :-) 
 
 ```
-[CD, fit_error, CD_tot] = convert_to_coefficients();
+[CD, fit_error, CD_tot] = convert_to_coefficients(p, f, r, theta, z, N);
 ```
 
 CD contains the coefficients describing the outgoing sound
@@ -55,7 +55,6 @@ CD_tot contains the coefficients describing the in- and outgoing sound
 ```
 figure
 plot(fit_error)
-semilogx(f, fit_error)
 semilogx(f, fit_error)
 xlabel('Frequency [Hz]')
 ylabel('Fit error [dB]')
@@ -96,7 +95,6 @@ shading flat
 set(gca,'xscale','log');
 colormap jet
 colorbar
-max(out(:))
 caxis([-70 -30]) % adjust for actual limits
 ```
 
